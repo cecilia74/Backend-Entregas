@@ -35,31 +35,32 @@ class ProductManager {
 
     updateProduct(id, newtitle, newdescription, newprice, newthumbnail, newcode, newstock) {
 
-        let update = this.products.find((prod) => prod.id === id);
+        let update = this.products.findIndex((pro) => pro.id === id);
 
-        if (update) {
-            this.products.push({
-                id,
-                ...update,
-                title: newtitle,
-                description: newdescription,
-                price: newprice,
-                thumbnail: newthumbnail,
-                code: newcode,
-                stock: newstock,
-            });
-            fs.writeFileSync(this.path, JSON.stringify(this.products));
-        } else {
-            console.log("Not found");
-            return undefined;
-        }
+            if (update) {
+                this.products.push({
+                    id,
+                    ...update,
+                    title: newtitle,
+                    description: newdescription,
+                    price: newprice,
+                    thumbnail: newthumbnail,
+                    code: newcode,
+                    stock: newstock,
+                });
+                fs.writeFileSync(this.path, JSON.stringify(this.products));
+            } else {
+                console.log("Not found");
+                return undefined;
+            }
+        
 
     }
 
 
 
     deleteProduct(id) {
-
+        
         const findId = this.products.find((prod) => prod.id === id);
         if (findId) {
             this.products.splice(findId, 1);
@@ -67,7 +68,6 @@ class ProductManager {
         } else {
             console.log("Id doesn't exist");
             return undefined;
-
         }
 
     }
