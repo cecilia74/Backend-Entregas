@@ -95,7 +95,7 @@ for (let i = 0; i<this.products.length; i++) {
 
   // Pregunta este código como lo podría utilizar para usarlo en lugar del código de abajo
 
-if (title = "" || description === "" || price === "" || thumbnail === "" || code === "" || stock === "") {
+if (!title || !description || !price || !thumbnail || !code || !stock ) {
     console.log("Product not added. Please complete again")
 return undefined
 } else {
@@ -113,19 +113,25 @@ let found = this.products.find((prod) => prod.id === id);
 return found;
 }
 
-updateProduct(id,newcode,newtitle) {
+updateProduct(id,newtitle,newdescription,newprice,newthumbnail,newcode,newstock) {
 
-const update = this.products.find((prod) => prod.id === id);
+let update = this.products.find((prod) => prod.id === id);
+
+
   if (update) {
     this.products.push({
       ...update,
+      id,
       title: newtitle,
-      code:newcode,
-
+      description: newdescription,
+      price: newprice,
+      thumbnail: newthumbnail,
+      code: newcode,
+      stock: newstock,
     });
   } else {
-console.log("Not found")
-return undefined
+console.log("Not found");
+return undefined;
   }
 
 }
@@ -133,7 +139,10 @@ return undefined
 deleteProduct(id) {
   const deleteId = this.products.find((prod) => prod.id === id);
 if (deleteId) {
-    this.products.delete(id);
+    delete this.products.deleteId;
+} else {
+  console.log("Id doesn't exist");
+  return undefined;
 }
 
 }
@@ -143,8 +152,10 @@ if (deleteId) {
 const trial = new ProductManager();
 trial.addProduct('b','cosa','','imgen','452342','4');
 trial.addProduct('y','cosabuena','333','imgen','452342','6');
-trial.addProduct('y','cosamala','333','imgen','452342','6');
-trial.addProduct('y','cosamasomenosbuena','653','imgen','86663342','6');
+trial.addProduct('r','cosamala','333','imgen','5234','6');
+trial.addProduct('u','cosamasomenosbuena','653','imgen','86663342','6');
 
 console.log(trial.getProducts());
-console.log(trial.getProductById(1));
+console.log(trial.getProductById(3));
+console.log(trial.updateProduct(3,"producto prueba","Este es un producto prueba",200,"Sin imagen","abc123",25))
+console.log(trial.deleteProduct(7));
