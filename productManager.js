@@ -1,3 +1,4 @@
+const { error } = require('console');
 const fs = require('fs');
 
 class ProductManager {
@@ -14,7 +15,7 @@ class ProductManager {
             console.log("Product not added. Please complete again")
             return undefined
         } else if (this.products.some((p) => p.code === code)) {
-            console.log('The code', newProducts.code, 'has already been used. Please select another code')
+            console.log(`The code ${ newProducts.code} has already been used. Please select another code`)
             return undefined;
         } else {
             this.products.push({ id: this.products.length + 1, ...newProducts });
@@ -34,25 +35,22 @@ class ProductManager {
     }
 
     updateProduct(id, newtitle, newdescription, newprice, newthumbnail, newcode, newstock) {
+        let data = fs.readFileSync(this.path, "UTF-8")
+        let dataParse = JSON.parse(data)
+        let productFound = dataParse.findIndex(product => product.id === id)
 
-        let update = this.products.findIndex((pro) => pro.id === id);
-
-            if (update) {
-                this.products.push({
+        const update = {
                     id,
-                    ...update,
                     title: newtitle,
                     description: newdescription,
                     price: newprice,
                     thumbnail: newthumbnail,
                     code: newcode,
                     stock: newstock,
-                });
-                fs.writeFileSync(this.path, JSON.stringify(this.products));
-            } else {
-                console.log("Not found");
-                return undefined;
-            }
+                };
+                dataParse[productFound] = update
+        fs.writeFileSync(this.path, JSON.stringify(dataParse))
+        console.log(dataParse)
         
 
     }
@@ -60,14 +58,14 @@ class ProductManager {
 
 
     deleteProduct(id) {
-        
         const findId = this.products.find((prod) => prod.id === id);
         if (findId) {
             this.products.splice(findId, 1);
             fs.writeFileSync(this.path, JSON.stringify(this.products))
+            return `${id} was deleted`
         } else {
             console.log("Id doesn't exist");
-            return undefined;
+            return error;
         }
 
     }
