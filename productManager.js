@@ -48,7 +48,7 @@ class ProductManager {
                     code: newcode,
                     stock: newstock,
                 };
-                dataParse[productFound] = update
+        dataParse[productFound] = update
         fs.writeFileSync(this.path, JSON.stringify(dataParse))
         console.log(dataParse)
         
@@ -58,14 +58,16 @@ class ProductManager {
 
 
     deleteProduct(id) {
-        const findId = this.products.find((prod) => prod.id === id);
+        let data = fs.readFileSync(this.path, "UTF-8")
+        let dataParse = JSON.parse(data)
+        let findId = dataParse.findIndex((prod) => prod.id === id);
         if (findId) {
-            this.products.splice(findId, 1);
-            fs.writeFileSync(this.path, JSON.stringify(this.products))
+            dataParse.splice(findId, 1);
+            fs.writeFileSync(this.path, JSON.stringify(dataParse))
             return `${id} was deleted`
         } else {
             console.log("Id doesn't exist");
-            return error;
+            return undefined;
         }
 
     }
