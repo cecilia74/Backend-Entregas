@@ -28,14 +28,21 @@ export default class ProductManager {
     }
 
 
-    getProducts() {
-        return this.products;
+    async getProducts() {
+        let data = await fs.promises.readFile(this.path, "UTF-8")
+        return JSON.parse(data)   
     }
+    
+    // async getProductById(id) {
+    //     let data = await fs.promises.readFile(this.path, "UTF-8")
+    //     return data.find(product => product.id == id)
+    //     }
+    
 
     async getProductById(id) {
-        let found = await this.products.find((prod) => prod.id === id);
-        return found;
-    }
+        let data = await this.getProducts()
+        return data.find(product => product.id == id)
+        }
 
     updateProduct(id, newtitle, newdescription, newprice, newthumbnail, newcode, newstock) {
         let data = fs.readFileSync(this.path, "UTF-8");
