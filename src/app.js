@@ -1,11 +1,14 @@
 import express from 'express';
 import handlebars from "express-handlebars";
 import path from "path";
-import { testPlantillaProducts } from "./routes/test-plantilla.js";
+import { realtime } from "./routes/realtimeproducts.router.js";
 import { productsRouter } from './routes/users.products.js';
 import { _dirname } from "./utils.js";
 import { Server } from 'socket.io';
-import { testSocketRouter } from './routes/test-socket.router.js';
+import { home } from './routes/home.router.js';
+import ProductManager from './logic/ProductManager.js';
+
+const appManager = new ProductManager();
 const app = express();
 const PORT = 8080;
 
@@ -17,12 +20,11 @@ app.use(express.static("public"));
 
 app.use("/api/products", productsRouter);
 
-
+app.use("/realtimeproducts", realtime)
 // DEVOLVER HTML
-app.use("/test-plantilla-products", testPlantillaProducts);
 
 // SOCKET
-app.use("/test-socket", testSocketRouter)
+app.use("/home", home)
 
 app.get("*", (req, res) => {
     res.send("Welcome to my humble page.")
@@ -46,12 +48,12 @@ socketserver.on("connection", (socket) => {
     console.log(socket.id + "quedo conectado al socket")
 });
 
-socket.on("new-product", async (newProd) => {
+socketserver.on("new-product", async (newProd) => {
     try {
-        await ProductManager.addProduct({ ...newProd });
+        await appManager.addProduct({ ...newProd });
 
         // Actualizar lista después de agregar producto
-        const productsList = await productManager.getProducts();
+        const productsList = await app.getProducts();
         console.log(productsList);
         socketserver.emit("products", productsList);
     } catch (err) {
@@ -59,12 +61,12 @@ socket.on("new-product", async (newProd) => {
     }
 });
 
-socket.on("delete-product", async (productId) => {
+socketserver.on("delete-product", async (productId) => {
     try {
-        await ProductManager.deleteProduct(productId);
+        await appManager.deleteProduct(productId);
 
         // Actualizar lista después de eliminar producto
-        const productsList = await productManager.getProducts();
+        const productsList = await appManager.getProducts();
         console.log(productsList);
         socketserver.emit("products", productsList);
     } catch (err) {

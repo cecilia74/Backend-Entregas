@@ -8,7 +8,6 @@ export default class ProductManager {
 
 
     addProduct(title, description, price, thumbnail, code, stock) {
-        fs.promises.readFile(this.path, "UTF-8") 
 
         const newProducts = { title, description, price, thumbnail, code, stock }
 
