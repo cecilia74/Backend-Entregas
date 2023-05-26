@@ -103,7 +103,7 @@ productsRouter.post("/", (req, res) => {
 });
 
 
- productsRouter.put("/:pid", (req, res) => {
+productsRouter.put("/:pid", (req, res) => {
     try {
         const di = req.params.pid;
         const newtitle = req.body.title;

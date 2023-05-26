@@ -22,8 +22,9 @@ app.use("/api/products", productsRouter);
 
 
 // DEVOLVER HTML
+
 app.use("/home", home)
-// SOCKET
+
 app.use("/realtimeproducts", realtime)
 
 app.get("*", (req, res) => {
@@ -32,11 +33,12 @@ app.get("*", (req, res) => {
 
 
 // CONFIG DEL MOTOR DE PLANTILLAS
+
 app.engine("handlebars", handlebars.engine());
 app.set("views", path.join(_dirname, "views"));
 app.set("view engine", "handlebars");
 
-
+//SERVER
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Example app listening http://localhost:${PORT}`);
@@ -51,8 +53,7 @@ socketserver.on("connection", (socket) => {
         try {
             await appManager.addProduct({ title, description, price, thumbnail, code, stock });
 
-            // Actualizar lista después de agregar producto
-            const productsList = await app.getProducts();
+            const productsList = await appManager.getProducts();
             console.log(productsList);
             socketserver.emit("products", productsList);
         } catch (err) {
@@ -64,7 +65,6 @@ socketserver.on("connection", (socket) => {
         try {
             appManager.deleteProduct(productId);
 
-            // Actualizar lista después de eliminar producto
             const productsList = await appManager.getProducts();
             console.log(productsList);
             socketserver.emit("products", productsList);

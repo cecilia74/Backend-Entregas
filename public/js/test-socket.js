@@ -14,7 +14,7 @@ const id = document.getElementById("productId");
 
 socket.on("products", (productsList) => {
     const productListContainer = document.getElementById("dynamic-list");
-    productListContainer.innerHTML = ""; // Limpiar el contenido existente
+    productListContainer.innerHTML = ""; 
 
     productsList.forEach((product) => {
         const productHTML = `
@@ -40,22 +40,15 @@ socket.on("products", (productsList) => {
 
 addProduct.addEventListener("submit", (e) => {
     e.preventDefault();
-    const newProduct = {
-        title: titleProd.value,
-        description: descProd.value,
-        code: codeProd.value,
-        category: catProd.value,
-        thumbnails: url.value,
-        stock: parseInt(stockProd.value),
-        price: parseInt(priceProd.value),
-    };
-    socket.emit("new-product", newProduct);
+
+    socket.emit("new-product", {title: titleProd.value, description: descProd.value, price: parseInt(priceProd.value), thumbnails: url.value, code: codeProd.value, stock: parseInt(stockProd.value)});
     addProduct.reset();
+        console.log(addProduct)
 });
 
 deleteProduct.addEventListener("submit", (e) => {
     e.preventDefault();
     socket.emit("delete-product", parseInt(productId.value));
     deleteProduct.reset();
-    console.log(deleteProduct)
+
 });
