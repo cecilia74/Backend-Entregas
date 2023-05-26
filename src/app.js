@@ -20,11 +20,11 @@ app.use(express.static("public"));
 
 app.use("/api/products", productsRouter);
 
-app.use("/realtimeproducts", realtime)
-// DEVOLVER HTML
 
-// SOCKET
+// DEVOLVER HTML
 app.use("/home", home)
+// SOCKET
+app.use("/realtimeproducts", realtime)
 
 app.get("*", (req, res) => {
     res.send("Welcome to my humble page.")
@@ -45,32 +45,31 @@ const httpServer = app.listen(PORT, () => {
 const socketserver = new Server(httpServer);
 
 socketserver.on("connection", (socket) => {
-    console.log(socket.id + "quedo conectado al socket")
+    console.log(`New clinet: ${socket.id}`);
+
+    socket.on("new-product", async (title, description, price, thumbnail, code, stock) => {
+        try {
+            await appManager.addProduct({ title, description, price, thumbnail, code, stock });
+
+            // Actualizar lista después de agregar producto
+            const productsList = await app.getProducts();
+            console.log(productsList);
+            socketserver.emit("products", productsList);
+        } catch (err) {
+            console.log(err);
+        }
+    });
+
+    socket.on("delete-product", async (productId) => {
+        try {
+            appManager.deleteProduct(productId);
+
+            // Actualizar lista después de eliminar producto
+            const productsList = await appManager.getProducts();
+            console.log(productsList);
+            socketserver.emit("products", productsList);
+        } catch (err) {
+            console.log(err);
+        }
+    });
 });
-
-socketserver.on("new-product", async (newProd) => {
-    try {
-        await appManager.addProduct({ ...newProd });
-
-        // Actualizar lista después de agregar producto
-        const productsList = await app.getProducts();
-        console.log(productsList);
-        socketserver.emit("products", productsList);
-    } catch (err) {
-        console.log(err);
-    }
-});
-
-socketserver.on("delete-product", async (productId) => {
-    try {
-        await appManager.deleteProduct(productId);
-
-        // Actualizar lista después de eliminar producto
-        const productsList = await appManager.getProducts();
-        console.log(productsList);
-        socketserver.emit("products", productsList);
-    } catch (err) {
-        console.log(err);
-    }
-});
-

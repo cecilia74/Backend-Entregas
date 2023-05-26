@@ -1,6 +1,6 @@
 const socket = io();
 
-const addProduct = document.getElementById("addProductForm");
+const addProduct = document.getElementById("addProduct");
 const titleProd = document.getElementById("titleProd");
 const descProd = document.getElementById("descProd");
 const catProd = document.getElementById("catProd");
@@ -9,7 +9,7 @@ const codeProd = document.getElementById("codeProd");
 const stockProd = document.getElementById("stockProd");
 const url = document.getElementById("urlInput");
 
-const deleteProductForm = document.getElementById("deleteProductForm");
+const deleteProduct = document.getElementById("deleteProduct");
 const id = document.getElementById("productId");
 
 socket.on("products", (productsList) => {
@@ -20,15 +20,15 @@ socket.on("products", (productsList) => {
         const productHTML = `
     <div class="col-md-3">
         <div class="card">
-            <img class="card-img-top" src=${product.thumbnails[0]} alt="" />
+            <img class="card-img" src=${product.thumbnails} alt="" />
             <div class="card-body">
                 <h2 class="card-title">${product.title}</h2>
                 <p class="card-text">${product.description}</p>
                 <p class="card-text">ID: ${product.id}</p>
-                <p class="card-text">Código: ${product.code}</p>
-                <p class="card-text">Categoría: ${product.category}</p>
+                <p class="card-text">Code: ${product.code}</p>
                 <p class="card-text">Stock: ${product.stock}</p>
-                <p class="card-text">Precio: $${product.price}</p>
+                <p class="card-text">Price: $${product.price}</p>
+                <p class="card-text">Category: ${product.category}</p>
                 <p class="card-text">Status: ${product.status}</p>
             </div>
         </div>
@@ -53,8 +53,9 @@ addProduct.addEventListener("submit", (e) => {
     addProduct.reset();
 });
 
-deleteProductForm.addEventListener("submit", (e) => {
+deleteProduct.addEventListener("submit", (e) => {
     e.preventDefault();
     socket.emit("delete-product", parseInt(productId.value));
-    deleteProductForm.reset();
+    deleteProduct.reset();
+    console.log(deleteProduct)
 });
