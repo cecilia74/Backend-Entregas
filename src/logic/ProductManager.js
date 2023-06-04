@@ -7,9 +7,9 @@ export default class ProductManager {
     }
 
 
-    addProduct(title, description, price, thumbnail, code, stock) {
+    addProduct(title, description, price, thumbnail, code, stock,category,status) {
 
-        const newProducts = { title, description, price, thumbnail, code, stock }
+        const newProducts = { title, description, price, thumbnail, code, stock,category,status }
 
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             console.log("Product not added. Please complete again")

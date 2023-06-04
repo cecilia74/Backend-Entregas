@@ -4,14 +4,20 @@ import { chatRouter } from './routes/chat.router.js';
 import path from "path";
 import { realtime } from "./routes/realtimeproducts.router.js";
 import { productsRouter } from './routes/users.products.js';
+import { usersRouter } from './routes/users.router.js';
 import { _dirname } from "./utils.js";
 import { Server } from 'socket.io';
 import { home } from './routes/home.router.js';
 import ProductManager from './logic/ProductManager.js';
+import { connect } from 'mongoose';
+
+
 
 const appManager = new ProductManager();
 const app = express();
 const PORT = 8080;
+
+connectMongo();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +26,7 @@ app.use(express.static("public"));
 
 
 app.use("/api/products", productsRouter);
+app.use("/api/users", usersRouter);
 
 
 // DEVOLVER HTML
@@ -48,6 +55,21 @@ app.set("view engine", "handlebars");
 const httpServer = app.listen(PORT, () => {
     console.log(`Example app listening http://localhost:${PORT}`);
 });
+
+// CONNECT TO MONGO
+
+export async function connectMongo() {
+    try {
+        await connect(
+            "mongodb+srv://ceciliaponce28:mHey2UVhS8P29Yhr@proyectos-backend.qr0fbhz.mongodb.net/?retryWrites=true&w=majority"
+        );
+        console.log("plug to mongo!");
+    } catch (e) {
+        console.log(e);
+        throw "can not connect to the db";
+    }
+}
+
 
 const socketserver = new Server(httpServer);
 
@@ -81,8 +103,8 @@ socketserver.on("connection", (socket) => {
     });
 
     socket.on("msg_front_to_back", async (msg) => {
-            msgs.push(msg);
-            // console.log(msgs)
-            socketserver.emit("listado_de_msgs", msgs)
-        });
+        msgs.push(msg);
+        // console.log(msgs)
+        socketserver.emit("listado_de_msgs", msgs)
+    });
 });
