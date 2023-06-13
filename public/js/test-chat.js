@@ -1,13 +1,13 @@
 const socket = io();
 
 const chatBox = document.getElementById("input-msg");
-let userName = "";
+let userEmail = "";
 
 async function main() {
-    const { value: nombre } = await Swal.fire({
-        title: "Enter your name",
+    const { value: email } = await Swal.fire({
+        title: "Enter your email",
         input: "text",
-        inputLabel: "Your name",
+        inputLabel: "Your email",
         inputValue: "",
         showCancelButton: false,
         allowOutsideClick: false,
@@ -17,7 +17,7 @@ async function main() {
             }
         },
     });
-    userName = nombre;
+    userEmail = email;
 }
     main();
 
@@ -25,8 +25,8 @@ chatBox.addEventListener("keyup", ({ key }) => {
 
     if (key == "Enter") {
         socket.emit("msg_front_to_back", {
-            msg: chatBox.value,
-            user: userName,
+            message: chatBox.value,
+            user: userEmail,
         });
         chatBox.value = "";
     }
@@ -38,7 +38,7 @@ socket.on("listado_de_msgs", (msgs) => {
     let format = "";
 
         msgs.forEach((msg) => {
-            format = format + "<p>user " + msg.user + ": " + msg.msg + "</p>"
+            format = format + "<p>email " + msg.user + ": " + msg.message + "</p>"
 
         })
         divMsg.innerHTML = format;

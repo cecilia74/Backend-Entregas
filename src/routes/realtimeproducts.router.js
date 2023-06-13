@@ -1,5 +1,5 @@
 import express  from "express";
-import ProductManager from "../logic/ProductManager.js";
+import ProductManager from "../DAO/productManager.js";
 
 export const realtime = express.Router();
 
