@@ -1,11 +1,11 @@
-import { UserModel } from "../DAO/models/users.model.js";
 import express from "express";
+import { UserService } from "../services/user.service.js";
 
 export const usersRouter = express.Router();
 
 usersRouter.get("/", async (req, res) => {
     try {
-        const users = await UserModel.find({});
+        const users = await UserService.getAll();
         return res.status(200).json({
             status: "success",
             msg: "listado de usuarios",
@@ -34,7 +34,11 @@ usersRouter.post("/", async (req, res) => {
                 data: {},
             });
         }
-        const userCreated = await UserModel.create({ firstName, lastName, email });
+        const userCreated = await UserService.create({ 
+            firstName, 
+            lastName, 
+            email 
+        });
         return res.status(201).json({
             status: "success",
             msg: "user created",
@@ -55,11 +59,11 @@ usersRouter.post("/", async (req, res) => {
     }
 });
 
-usersRouter.put("/:id", async (req, res) => {
-    const { id } = req.params;
+usersRouter.put("/:_id", async (req, res) => {
+    const { _id } = req.params;
     const { firstName, lastName, email } = req.body;
     try {
-        if (!firstName || !lastName || !email || !id) {
+        if (!firstName || !lastName || !email || !_id) {
             console.log(
                 "validation error: please complete firstName, lastname and email."
             );
@@ -69,9 +73,8 @@ usersRouter.put("/:id", async (req, res) => {
                 data: {},
             });
         }
-        const userUptaded = await UserModel.updateOne(
-            { _id: id },
-            { firstName, lastName, email }
+        const userUptaded = await UserService.updateOne(
+            { _id, firstName, lastName, email }
         );
         return res.status(201).json({
             status: "success",
@@ -89,24 +92,25 @@ usersRouter.put("/:id", async (req, res) => {
 });
 
 
-usersRouter.delete("/:id", async (req, res) => {
+usersRouter.delete("/:_id", async (req, res) => {
     try {
-        const { id } = req.params;
-        if (!id) {
+        const { _id } = req.params;
+                const result = await UserService.deleteOne(_id);
+        if (!_id) {
             console.log("validation error: please complete id to delete");
             return res.status(400).json({
                 status: "error",
                 msg: "please complete id",
                 data: {},
             });
+        } else if (result?.deletedCount > 0) {
+            return res.status(200).json({
+                status: "success",
+                msg: "user deleted",
+                data: {},
+            })
         }
 
-        await UserModel.deleteOne({ _id: id });
-        return res.status(200).json({
-            status: "success",
-            msg: "user deleted",
-            data: {},
-        });
     } catch (e) {
         console.log(e);
         return res.status(500).json({

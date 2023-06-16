@@ -2,7 +2,7 @@ import express from 'express';
 import handlebars from "express-handlebars";
 import path from "path";
 import { _dirname } from './config.js';
-import ProductManager from './DAO/productManager.js';
+import ProductManager from './DAO/functions/productManager.js';
 import { chatRouter } from './routes/chat.router.js';
 import { home } from './routes/home.router.js';
 import { realtime } from "./routes/realtimeproducts.router.js";
