@@ -1,13 +1,43 @@
-import { connect } from 'mongoose';
-
-
+import { connect, Schema, model } from 'mongoose';
+import { UserModel } from '../DAO/models/users.model.js';
+import faker from 'faker';
 // CONNECT TO MONGO
 
 export async function connectMongo() {
     try {
         await connect(
-            "mongodb+srv://ceciliaponce28:mHey2UVhS8P29Yhr@proyectos-backend.qr0fbhz.mongodb.net/?retryWrites=true&w=majority"
+            "mongodb+srv://ceciliaponce28:mHey2UVhS8P29Yhr@proyectos-backend.qr0fbhz.mongodb.net/?retryWrites=true&w=majority",
+            // { dbName: 'e-commerce' }
         );
+
+        // GENERATE FALSE USERS FOR TRIAL
+
+        // (async () => {
+        //     const users = [];
+        //     for (let i=0; i < 3000; i++) {
+        //         users.push({
+        //             email: faker.internet.email(),
+        //             password: faker.internet.password(),
+        //         }); 
+        //     }
+
+        //     try {
+        //         await UserModel.insertMany(users);
+        //         console.log("Inserted", users.length,"users")
+        //     } catch (err) {
+        //         console.log(err)
+        //     }
+        // })();
+
+        // END OF TRIAL
+
+        // SEARCH 
+
+        // let todos = await UserModel.find({firstName: "John"}).explain("executionStats");
+        // console.log(todos);
+
+        // END SEARCH
+
         console.log("plug to mongo!");
     } catch (e) {
         console.log(e);

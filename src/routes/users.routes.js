@@ -1,6 +1,7 @@
 import express from "express";
 import { UserService } from "../services/user.service.js";
 
+
 export const usersRouter = express.Router();
 
 usersRouter.get("/", async (req, res) => {
@@ -8,7 +9,7 @@ usersRouter.get("/", async (req, res) => {
         const users = await UserService.getAll();
         return res.status(200).json({
             status: "success",
-            msg: "listado de usuarios",
+            msg: "users list",
             data: users,
         });
     } catch (e) {

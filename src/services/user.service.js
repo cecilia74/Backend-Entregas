@@ -1,5 +1,4 @@
 import { UserModel } from "../DAO/models/users.model.js";
-
 class userService {
 
     async getAll() {
@@ -7,18 +6,49 @@ class userService {
             {},
             {
                 _id: true,
-                firstName: true,
-                lastName: true,
                 email: true,
             },);
         return users;
     }
 
-    async create() {
+async findOne(id) {
+try{
+        const findOne = await UserModel.findOne({ _id: id });
+        if (!findOne) {
+            throw new Error("User not found.");
+        }
+        return product;
+    } catch (err) {
+        throw new Error("Cannnot search user");
+    }
+}
+async findEmail(em) {
+    try{
+            const findOne = await UserModel.findOne({email:em});
+            // if (!findOne) {
+            //     throw new Error("User not found.");
+            // }
+            return findOne;
+        } catch (err) {
+            throw new Error("Cannnot search user",console.error(err));
+            
+        }
+    }
+    async ckeckPass(pass) {
+        try {
+            const find = await UserModel.findOne({password:pass})
+            return find
+
+        } catch(err){
+
+        }
+
+    }
+
+    async createUser({email,password}) {
         const userCreated = await UserModel.create({
-            firstName,
-            lastName,
-            email
+            email,
+            password,
         });
         return userCreated;
     }
@@ -26,7 +56,7 @@ class userService {
     async update() {
         const userUptaded = await UserModel.updateOne(
             { _id: _id },
-            { firstName, lastName, email }
+            { email, }
         );
         return userUptaded;
     }
