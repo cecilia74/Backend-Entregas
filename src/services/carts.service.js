@@ -3,30 +3,30 @@ import { ProductsModel } from "../DAO/models/products.model.js";
 
 class cartServise {
     async getAll() {
-        const carts = await CartsModel.find({}); /* .populate("products.product") */
+        const carts = await CartsModel.find({}).exec(); /* .populate("products.product") */
         return carts;
     }
 
 
 
-    async getOne(cid) {
+    async getOne(cartId) {
         try {
-            const getCart = await CartsModel.findById(cid).populate('products.product');
-        if (!getCart) {
-            throw new Error("Cart not found.");
+            const getcart = await CartsModel.findOne({ _id: cartId }).exec();
+            return getcart;
+        } catch (error) {
+            throw new Error('Error al obtener el carrito');
         }
-        return getCart;
-    } catch (err) {
-        throw new Error("Cannnot get cart");
     }
-}
 
-    async createCart() {
-        const newCart = await CartsModel.create({});
-        if (!newCart) {
-            throw new Error("Cannot create cart");
+    async createCart(products) {
+        try {
+            const cart = await CartsModel.create(products);
+            const cartId = cart.toObject();
+            const cartIdString = cartId._id.toString();
+            return cartIdString;
+        } catch (error) {
+            throw new Error('Cant create cart');
         }
-        return newCart;
     }
 
 

@@ -1,19 +1,22 @@
+import MongoStore from 'connect-mongo';
 import express from 'express';
 import handlebars from "express-handlebars";
+import session from 'express-session';
+import passport from 'passport';
 import path from "path";
+import FileStore from 'session-file-store';
 import { _dirname } from './config.js';
+import { iniPassport } from './config/passport.config.js';
+import { authRouter } from './routes/auth.routes.js';
 import { cartRouter } from './routes/carts.routes.js';
 import { chatRouter } from './routes/chat.routes.js';
 import { home } from './routes/home.routes.js';
 import { productsRouter } from './routes/products.routes.js';
 import { realtime } from "./routes/realtimeproducts.routes.js";
+import { sessionsRouter } from './routes/sessions.routes.js';
 import { usersRouter } from './routes/users.routes.js';
 import { connectMongo } from './utils/dbConnecton.js';
 import { connectSocketServer } from "./utils/socketServer.js";
-import session from 'express-session';
-import { sessionsRouter } from './routes/sessions.routes.js';
-import FileStore from 'session-file-store';
-import MongoStore from 'connect-mongo';
 
 const app = express();
 const PORT = 8080;
@@ -37,10 +40,17 @@ app.use(session({
 }));
 
 
+
 app.use("/api/products", productsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/session", sessionsRouter);
+
+app.use("/auth",authRouter)
+
+iniPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 // DEVOLVER HTML
 
